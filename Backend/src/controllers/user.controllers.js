@@ -2,17 +2,17 @@ import expressAsyncHandler from "express-async-handler";
 import User from "../models/user.models.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { email, z } from "zod";
+import { z } from "zod";
 
-const createToken  = () => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+const createToken  = (_id) => {
+    return jwt.sign({ _id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 }
 
 const options = {
     httpOnly: true,
     // secure: process.env.NODE_ENV === "production",
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    // sameSite: "strict",
+    maxAge:  15 * 60 * 1000,
+    sameSite: "None",
 }
 
 const signInValidator = z.object({
@@ -65,4 +65,13 @@ const signinValidator = expressAsyncHandler(async (req, res) => {
     return res.status(200).cookie("token", token, options).json({ message: "User signed in successfully", user: user });
 });
 
-export { signupUser, signinValidator };  
+const geMeValidator = expressAsyncHandler(async (req, res) => {
+    return res.status(200).json(req.user);
+})
+
+//want to work on seperately on logoutvalidator on referesh token + short lived token
+const logOutValidator = expressAsyncHandler(async (req, res) => {
+    return res.status(200).clearCookie("token", options).json({message : "logout successfully!!"})
+})
+
+export { signupUser, signinValidator, geMeValidator, logOutValidator };  
