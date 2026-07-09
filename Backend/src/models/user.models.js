@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { minLength } from "zod";
+import { trim } from "zod";
 
 const userSchema = new mongoose.Schema(
   {
@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema(
     socketId: {
       type: String,
       default: null,
+      trim: true
     },
   },
   { timestamps: true },

@@ -16,11 +16,11 @@ const protect = expressAsyncHandler(async (req, res, next) => {
             req.user = await User.findById(decoded._id).select('-password');
 
             if(!req.user){
-                return res.status(500).json({
+                return res.status(401).json({
                     message: "Invalid token"
                 })
             }
-            next();
+            return next();
         } catch (error) {
             console.log(error);
             return res.status(404).json({
